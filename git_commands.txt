@@ -1,0 +1,88 @@
+================================================================================
+                    GIT WORKFLOW COMMAND DOCUMENTATION
+           Assignment: Software Engineering & DevOps Principles
+           Student: Shahriar Rahman
+           Repository: https://github.com/rahmanshahriar777/myuniversityproject.git
+================================================================================
+
+1. git init
+   Initializes a new, empty Git version control repository inside the project directory.
+
+2. git branch -M main
+   Renames or specifies the initial default branch as 'main' according to modern conventions.
+
+3. git config user.name "Shahriar Rahman"
+   Configures the author display name that will be recorded in all subsequent commits.
+
+4. git config user.email "rahmanshahriar777@gmail.com"
+   Configures the author email address associated with all commits in the repository.
+
+5. git add index.html about.html
+   Stages the initial HTML files (index.html and about.html) from the working tree to the staging area.
+
+6. git commit -m "Initial commit: Add index.html and about.html"
+   Creates the root commit with a clear message recording the baseline snapshot of the project.
+
+7. git diff
+   Compares and displays unstaged line-by-line differences between the working tree and HEAD.
+
+8. git add about.html
+   Stages the updated about.html file containing course and assignment details.
+
+9. git commit -m "Update about.html with course details and objectives"
+   Records the second commit on the main branch capturing project documentation updates.
+
+10. git branch feature
+    Creates a new branch named 'feature' branching off from the current HEAD of main.
+
+11. git checkout feature
+    Switches the active working directory and HEAD pointer to the 'feature' branch.
+
+12. git add index.html
+    Stages the modified index.html file containing new feature cards on the feature branch.
+
+13. git commit -m "Add feature cards for assignments and grades on feature branch"
+    Commits the feature additions directly onto the isolated 'feature' branch.
+
+14. git checkout main
+    Switches the active branch back to 'main' in preparation for merging.
+
+15. git merge --no-ff feature -m "Merge feature branch into main"
+    Merges the 'feature' branch into 'main' using non-fast-forward to preserve branch history and topology.
+
+16. git log --graph --oneline --decorate --all
+    Displays an ASCII graph of the commit history, branch pointers, and merge relationships across all branches.
+
+17. git log -n 5
+    Outputs detailed commit metadata (hashes, authors, timestamps, commit messages) for recent commits.
+
+18. git check-ignore -v debug.log temp/cache.tmp
+    Verifies that files matching .gitignore patterns (log files and temp directory) are properly ignored.
+
+19. git add .gitignore
+    Stages the .gitignore configuration file into the index.
+
+20. git commit -m "Add .gitignore to exclude log files, temp folder, and editor metadata"
+    Saves the .gitignore file into the repository to persist repository cleanliness rules.
+
+21. git commit -m "Add experimental feature draft (to be undone)"
+    Records an additional commit created specifically to demonstrate Git undo operations.
+
+22. git reset HEAD~1
+    Undoes the most recent commit by moving HEAD back one commit while retaining modified files in the working tree.
+
+23. git status
+    Displays the state of the working directory and staging area, verifying clean states and untracked files.
+
+24. git remote add origin https://github.com/rahmanshahriar777/myuniversityproject.git
+    Connects the local Git repository to the remote GitHub repository endpoint under the alias 'origin'.
+
+25. git remote -v
+    Displays the remote repository names and URLs configured for fetching and pushing.
+
+26. git push -u origin main
+    Pushes the local 'main' branch commits to the remote repository on GitHub and sets upstream tracking.
+
+27. git push origin feature
+    Pushes the local 'feature' branch to GitHub so the complete branch history is visible on the remote repository.
+================================================================================

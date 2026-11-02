@@ -1,0 +1,8 @@
+# Ignore all .log files
+*.log
+
+# Ignore temporary folder
+temp/
+
+# Local editor/agent metadata
+.kilo/

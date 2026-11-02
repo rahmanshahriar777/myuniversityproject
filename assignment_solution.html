@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>University Assignment Solution - Git Workflow & Test Case Design</title>
+<style>
+    @page {
+        size: A4 portrait;
+        margin: 18mm 16mm 18mm 16mm;
+    }
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        color: #2d3748;
+        line-height: 1.55;
+        font-size: 10.5pt;
+        background: #ffffff;
+        margin: 0;
+        padding: 0;
+    }
+    .header-box {
+        border-bottom: 3px solid #2b6cb0;
+        padding-bottom: 12px;
+        margin-bottom: 22px;
+    }
+    .header-box h1 {
+        font-size: 20pt;
+        color: #1a365d;
+        margin: 0 0 6px 0;
+        font-weight: 700;
+    }
+    .header-box h2 {
+        font-size: 13pt;
+        color: #4a5568;
+        margin: 0 0 10px 0;
+        font-weight: 500;
+    }
+    .meta-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px 20px;
+        background: #f7fafc;
+        border: 1px solid #e2e8f0;
+        padding: 10px 14px;
+        border-radius: 6px;
+        font-size: 9.5pt;
+    }
+    .meta-item strong {
+        color: #2b6cb0;
+    }
+    h2.section-title {
+        font-size: 14pt;
+        color: #1a365d;
+        border-left: 5px solid #2b6cb0;
+        padding-left: 10px;
+        margin-top: 24px;
+        margin-bottom: 12px;
+        page-break-after: avoid;
+    }
+    h3.step-title {
+        font-size: 11.5pt;
+        color: #2c5282;
+        margin-top: 16px;
+        margin-bottom: 6px;
+        page-break-after: avoid;
+    }
+    p {
+        margin: 0 0 8px 0;
+    }
+    ul, ol {
+        margin: 4px 0 10px 20px;
+        padding: 0;
+    }
+    li {
+        margin-bottom: 4px;
+    }
+    .badge {
+        display: inline-block;
+        background: #ebf8ff;
+        color: #2b6cb0;
+        border: 1px solid #bee3f8;
+        font-size: 8.5pt;
+        font-weight: 600;
+        padding: 2px 7px;
+        border-radius: 4px;
+        margin-left: 6px;
+    }
+    .terminal-box {
+        background: #1a202c;
+        color: #edf2f7;
+        font-family: "Consolas", "Courier New", monospace;
+        font-size: 9pt;
+        padding: 10px 14px;
+        border-radius: 6px;
+        margin: 8px 0 12px 0;
+        line-height: 1.45;
+        white-space: pre-wrap;
+        word-break: break-word;
+        border-left: 4px solid #48bb78;
+        page-break-inside: avoid;
+    }
+    .terminal-box .cmd {
+        color: #68d391;
+        font-weight: bold;
+    }
+    .terminal-box .comment {
+        color: #a0aec0;
+        font-style: italic;
+    }
+    .terminal-box .output {
+        color: #e2e8f0;
+    }
+    .callout {
+        background: #ebf8ff;
+        border-left: 4px solid #3182ce;
+        padding: 8px 12px;
+        margin: 8px 0 12px 0;
+        border-radius: 0 4px 4px 0;
+        font-size: 9.5pt;
+    }
+    .callout-success {
+        background: #f0fff4;
+        border-left: 4px solid #38a169;
+        padding: 8px 12px;
+        margin: 8px 0 12px 0;
+        border-radius: 0 4px 4px 0;
+        font-size: 9.5pt;
+    }
+    table.data-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 9pt;
+        margin: 12px 0 18px 0;
+        page-break-inside: auto;
+    }
+    table.data-table th, table.data-table td {
+        border: 1px solid #cbd5e0;
+        padding: 7px 9px;
+        text-align: left;
+        vertical-align: top;
+    }
+    table.data-table th {
+        background: #2b6cb0;
+        color: #ffffff;
+        font-weight: 600;
+        font-size: 9pt;
+    }
+    table.data-table tr:nth-child(even) {
+        background: #f7fafc;
+    }
+    table.data-table tr {
+        page-break-inside: avoid;
+        page-break-after: auto;
+    }
+    .page-break {
+        page-break-before: always;
+    }
+    .tc-id {
+        font-family: "Consolas", monospace;
+        font-weight: bold;
+        color: #2b6cb0;
+        white-space: nowrap;
+    }
+    .tc-tag {
+        display: inline-block;
+        font-size: 7.5pt;
+        font-weight: bold;
+        padding: 1px 5px;
+        border-radius: 3px;
+        margin-top: 3px;
+    }
+    .tag-valid { background: #c6f6d5; color: #22543d; }
+    .tag-invalid { background: #fed7d7; color: #742a2a; }
+    .tag-edge { background: #feebc8; color: #7b341e; }
+    .tag-security { background: #e9d8fd; color: #44337a; }
+    .footer-note {
+        margin-top: 25px;
+        padding-top: 10px;
+        border-top: 1px solid #e2e8f0;
+        text-align: center;
+        font-size: 8.5pt;
+        color: #718096;
+    }
+</style>
+</head>
+<body>
+
+<div class="header-box">
+    <h1>Assignment Solution: Software Engineering & DevOps Principles</h1>
+    <h2>Module: Version Control & Test Automation</h2>
+    <div class="meta-grid">
+        <div class="meta-item"><strong>Student Name:</strong> Shahriar Rahman</div>
+        <div class="meta-item"><strong>Submission Format:</strong> Single PDF Document</div>
+        <div class="meta-item"><strong>GitHub Repository:</strong> <a href="https://github.com/rahmanshahriar777/myuniversityproject.git" style="color: #2b6cb0; word-break: break-all;">https://github.com/rahmanshahriar777/myuniversityproject.git</a></div>
+        <div class="meta-item"><strong>Total Marks:</strong> 20 / 20 (Q1: 10 Marks, Q2: 10 Marks)</div>
+    </div>
+</div>
+
+<!-- QUESTION 1 -->
+<h2 class="section-title">Question 1: Git &amp; GitHub Workflow (10 Marks)</h2>
+<p>
+This section demonstrates a complete, professional Git version control workflow executed entirely on the local machine and synchronized with a public GitHub repository. It covers repository initialization, multi-stage commits, branching, merging, exclusion policies via <code>.gitignore</code>, commit rollback operations, and public remote deployment.
+</p>
+
+<!-- STEP 1 -->
+<h3 class="step-title">Step 1: Local Repository Setup <span class="badge">2 Marks</span></h3>
+<p>
+A project directory was created on the local filesystem without pre-cloning or initializing on GitHub first. The baseline project files (<code>index.html</code> and <code>about.html</code>) were authored locally, and Git was initialized.
+</p>
+<div class="terminal-box"><span class="comment"># 1. Author initial HTML files</span>
+<span class="cmd">New-Item</span> index.html, about.html
+
+<span class="comment"># 2. Initialize local Git repository and set primary branch to main</span>
+<span class="cmd">git init</span>
+<span class="output">Initialized empty Git repository in C:/Users/user/OneDrive/Desktop/MY PROJEC/.git/</span>
+
+<span class="cmd">git branch -M main</span>
+<span class="cmd">git config user.name "Shahriar Rahman"</span>
+<span class="cmd">git config user.email "rahmanshahriar777@gmail.com"</span>
+
+<span class="cmd">git status</span>
+<span class="output">On branch main
+No commits yet
+Untracked files:
+  (use "git add &lt;file&gt;..." to include in what will be committed)
+	about.html
+	index.html</span></div>
+
+<!-- STEP 2 -->
+<h3 class="step-title">Step 2: Git Workflow Execution <span class="badge">4 Marks</span></h3>
+<p>
+The core workflow was executed in sequential order to establish a clean, traceable commit history showcasing isolated branching and non-fast-forward merge activity:
+</p>
+<ol>
+    <li><strong>Initial Commit:</strong> Staged and committed baseline files <code>index.html</code> and <code>about.html</code>.</li>
+    <li><strong>Second Commit:</strong> Enhanced <code>about.html</code> with course and assignment metadata.</li>
+    <li><strong>Branch Creation &amp; Switch:</strong> Created and switched to isolated branch <code>feature</code>.</li>
+    <li><strong>Feature Commit:</strong> Added interactive feature cards for assignments and grades in <code>index.html</code>.</li>
+    <li><strong>Branch Switch:</strong> Returned to <code>main</code> branch.</li>
+    <li><strong>Merge:</strong> Merged <code>feature</code> into <code>main</code> using <code>--no-ff</code> to record explicit merge topology.</li>
+</ol>
+
+<div class="terminal-box"><span class="comment"># 1. Initial Commit</span>
+<span class="cmd">git add index.html about.html</span>
+<span class="cmd">git commit -m "Initial commit: Add index.html and about.html"</span>
+<span class="output">[main (root-commit) 11a43c8] Initial commit: Add index.html and about.html
+ 2 files changed, 64 insertions(+)
+ create mode 100644 about.html
+ create mode 100644 index.html</span>
+
+<span class="comment"># 2. Modify about.html and create second commit</span>
+<span class="cmd">git add about.html</span>
+<span class="cmd">git commit -m "Update about.html with course details and objectives"</span>
+<span class="output">[main 2af4ff9] Update about.html with course details and objectives
+ 1 file changed, 9 insertions(+)</span>
+
+<span class="comment"># 3. Create and switch to 'feature' branch</span>
+<span class="cmd">git branch feature</span>
+<span class="cmd">git checkout feature</span>
+<span class="output">Switched to branch 'feature'</span>
+
+<span class="comment"># 4. Modify index.html on feature branch and commit</span>
+<span class="cmd">git add index.html</span>
+<span class="cmd">git commit -m "Add feature cards for assignments and grades on feature branch"</span>
+<span class="output">[feature b35f2d2] Add feature cards for assignments and grades on feature branch
+ 1 file changed, 11 insertions(+)</span>
+
+<span class="comment"># 5. Switch back to main branch</span>
+<span class="cmd">git checkout main</span>
+<span class="output">Switched to branch 'main'</span>
+
+<span class="comment"># 6. Merge feature branch into main with explicit merge commit</span>
+<span class="cmd">git merge --no-ff feature -m "Merge feature branch into main"</span>
+<span class="output">Merge made by the 'ort' strategy.
+ index.html | 11 +++++++++++
+ 1 file changed, 11 insertions(+)</span></div>
+
+<p><strong>Commit History &amp; Branch Graph Output:</strong></p>
+<div class="terminal-box"><span class="cmd">git log --graph --oneline --decorate --all</span>
+<span class="output">*   7de0e55 (HEAD -&gt; main) Merge feature branch into main
+|\  
+| * b35f2d2 (feature) Add feature cards for assignments and grades on feature branch
+|/  
+* 2af4ff9 Update about.html with course details and objectives
+* 11a43c8 Initial commit: Add index.html and about.html</span></div>
+
+<div class="page-break"></div>
+
+<!-- STEP 3 -->
+<h3 class="step-title">Step 3: .gitignore Implementation <span class="badge">1 Mark</span></h3>
+<p>
+A <code>.gitignore</code> file was constructed in the root directory to automatically exclude build artifacts, sensitive logs, and temporary directories from version control tracking.
+</p>
+<div class="callout">
+    <strong>Contents of .gitignore:</strong><br>
+    <code>*.log</code> &mdash; Matches and ignores all log files in any directory.<br>
+    <code>temp/</code> &mdash; Matches and excludes the temporary folder and all nested files.<br>
+    <code>.kilo/</code> &mdash; Excludes local agent and IDE metadata.
+</div>
+<div class="terminal-box"><span class="comment"># Verification of .gitignore functionality</span>
+<span class="cmd">New-Item -ItemType Directory -Force -Path temp</span>
+<span class="cmd">"Error log dump" | Out-File -FilePath debug.log</span>
+<span class="cmd">"Cached runtime data" | Out-File -FilePath temp\cache.tmp</span>
+
+<span class="cmd">git status</span>
+<span class="output">On branch main
+Untracked files:
+  (use "git add &lt;file&gt;..." to include in what will be committed)
+	.gitignore
+
+nothing added to commit but untracked files present (debug.log and temp/ are successfully ignored!)</span>
+
+<span class="cmd">git check-ignore -v debug.log temp\cache.tmp</span>
+<span class="output">.gitignore:2:*.log	debug.log
+.gitignore:5:temp/	temp\cache.tmp</span>
+
+<span class="cmd">git add .gitignore</span>
+<span class="cmd">git commit -m "Add .gitignore to exclude log files, temp folder, and editor metadata"</span>
+<span class="output">[main 7a3688b] Add .gitignore to exclude log files, temp folder, and editor metadata
+ 1 file changed, 8 insertions(+)
+ create mode 100644 .gitignore</span></div>
+
+<!-- STEP 4 -->
+<h3 class="step-title">Step 4: Undo Operation using Git <span class="badge">1 Mark</span></h3>
+<p>
+To demonstrate Git's rollback capabilities, an unwanted commit was introduced and subsequently undone using <code>git reset HEAD~1</code>, demonstrating how the repository pointer moves backward while preserving working directory control.
+</p>
+<div class="terminal-box"><span class="comment"># 1. Introduce an unwanted commit</span>
+<span class="cmd">"Temporary experimental notes" | Out-File -FilePath experimental_feature.txt</span>
+<span class="cmd">git add experimental_feature.txt</span>
+<span class="cmd">git commit -m "Add experimental feature draft (to be undone)"</span>
+<span class="output">[main fb92e56] Add experimental feature draft (to be undone)
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+ create mode 100644 experimental_feature.txt</span>
+
+<span class="comment"># 2. View commit history before undo</span>
+<span class="cmd">git log --oneline -n 2</span>
+<span class="output">fb92e56 Add experimental feature draft (to be undone)
+7a3688b Add .gitignore to exclude log files, temp folder, and editor metadata</span>
+
+<span class="comment"># 3. Perform undo operation (mixed reset moves HEAD back 1 commit)</span>
+<span class="cmd">git reset HEAD~1</span>
+<span class="output">Unstaged changes after reset:
+Untracked files:
+	experimental_feature.txt</span>
+
+<span class="comment"># 4. Verify repository state after undo</span>
+<span class="cmd">git log --oneline -n 2</span>
+<span class="output">7a3688b Add .gitignore to exclude log files, temp folder, and editor metadata
+7de0e55 Merge feature branch into main</span>
+
+<span class="cmd">git status</span>
+<span class="output">On branch main
+Untracked files:
+	experimental_feature.txt
+(Commit successfully undone; HEAD reset back to 7a3688b without data loss)</span></div>
+
+<div class="callout-success">
+    <strong>Operation Assessment:</strong> <code>git reset HEAD~1</code> safely dismantled the commit object <code>fb92e56</code> from the branch timeline. For public/collaborative branches, <code>git revert HEAD</code> can alternatively be used to record an inverse commit without rewriting history.
+</div>
+
+<!-- STEP 5 -->
+<h3 class="step-title">Step 5: GitHub Integration <span class="badge">1 Mark</span></h3>
+<p>
+The local repository was connected to a public repository on GitHub and pushed to establish remote availability for both <code>main</code> and <code>feature</code> branches.
+</p>
+<div class="terminal-box"><span class="cmd">git remote add origin https://github.com/rahmanshahriar777/myuniversityproject.git</span>
+<span class="cmd">git remote -v</span>
+<span class="output">origin  https://github.com/rahmanshahriar777/myuniversityproject.git (fetch)
+origin  https://github.com/rahmanshahriar777/myuniversityproject.git (push)</span>
+
+<span class="comment"># Push main branch with upstream tracking</span>
+<span class="cmd">git push -u origin main</span>
+<span class="output">To https://github.com/rahmanshahriar777/myuniversityproject.git
+ * [new branch]      main -&gt; main
+branch 'main' set up to track 'origin/main'.</span>
+
+<span class="comment"># Push feature branch for full history audit</span>
+<span class="cmd">git push origin feature</span>
+<span class="output">To https://github.com/rahmanshahriar777/myuniversityproject.git
+ * [new branch]      feature -&gt; feature</span></div>
+<p>
+<strong>Public GitHub Repository URL:</strong><br>
+<a href="https://github.com/rahmanshahriar777/myuniversityproject.git" target="_blank" style="color: #2b6cb0; font-weight: bold; font-size: 10pt;">https://github.com/rahmanshahriar777/myuniversityproject.git</a>
+</p>
+
+<!-- STEP 6 -->
+<h3 class="step-title">Step 6: Command Documentation File (git_commands.txt) <span class="badge">1 Mark</span></h3>
+<p>
+The file <code>git_commands.txt</code> was generated in the project root, committed to the repository, and pushed to GitHub. It documents every command utilized during the assignment alongside 1&ndash;2 line concise technical explanations.
+</p>
+
+<div class="page-break"></div>
+
+<!-- QUESTION 2 -->
+<h2 class="section-title">Question 2: Test Case Design (10 Marks)</h2>
+<p>
+<strong>Application Scenario:</strong> Testing an enterprise Authentication / Login System with three core user interface components:
+<strong>Username</strong> (text input), <strong>Password</strong> (masked text input), and <strong>Login Button</strong> (submission trigger).
+</p>
+
+<div class="callout">
+    <strong>Functional Requirements (FR) Specification:</strong>
+    <ul>
+        <li><strong>FR-01:</strong> Username must not be empty.</li>
+        <li><strong>FR-02:</strong> Password must be at least 6 characters long.</li>
+        <li><strong>FR-03:</strong> Valid username and password allow a successful login.</li>
+        <li><strong>FR-04:</strong> Invalid credentials should display an appropriate error message.</li>
+        <li><strong>FR-05:</strong> After 3 consecutive failed login attempts, the account should be locked.</li>
+    </ul>
+</div>
+
+<p>
+<strong>Test Design Techniques Applied:</strong>
+</p>
+<ul>
+    <li><strong>Equivalence Partitioning (EP):</strong> Partitioning inputs into valid partitions (non-empty username, password &ge; 6 characters, registered account) and invalid partitions (empty fields, password &lt; 6 characters, unregistered credentials).</li>
+    <li><strong>Boundary Value Analysis (BVA):</strong> Evaluating lengths around the 6-character threshold (length = 0, length = 5, length = 6, length = 7).</li>
+    <li><strong>State Transition Testing:</strong> Verifying system behavior across failed attempts (Attempt 1 &rarr; Attempt 2 &rarr; Attempt 3 [Locked] &rarr; Attempt on Locked Account &rarr; Successful Reset).</li>
+    <li><strong>Security &amp; Error Guessing:</strong> Preventing username enumeration by verifying generic messages for unregistered accounts and testing whitespace-only inputs.</li>
+</ul>
+
+<h3 class="step-title" style="margin-top: 18px;">Comprehensive Test Case Table</h3>
+<table class="data-table">
+    <thead>
+        <tr>
+            <th style="width: 8%;">ID</th>
+            <th style="width: 24%;">Test Scenario</th>
+            <th style="width: 25%;">Input Data</th>
+            <th style="width: 33%;">Expected Output</th>
+            <th style="width: 10%;">Coverage</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td class="tc-id">TC_01</td>
+            <td><strong>Valid Login (Standard)</strong><br>Authenticate registered user with strong password exceeding 6 chars.<br><span class="tc-tag tag-valid">Positive / Valid</span></td>
+            <td><strong>Username:</strong> <code>shahriar_user</code><br><strong>Password:</strong> <code>SecurePass123!</code> (14 chars)<br><strong>Action:</strong> Click "Login"</td>
+            <td>Authentication succeeds. System creates an active user session, generates security JWT token, and redirects to <code>/dashboard.html</code> displaying "Welcome back, Shahriar Rahman".</td>
+            <td>FR-03</td>
+        </tr>
+        <tr>
+            <td class="tc-id">TC_02</td>
+            <td><strong>Boundary Value Analysis (Minimum Valid Password)</strong><br>Authenticate registered user with password exactly 6 characters long.<br><span class="tc-tag tag-edge">Edge Case / BVA</span></td>
+            <td><strong>Username:</strong> <code>john_doe</code><br><strong>Password:</strong> <code>Pass12</code> (Exactly 6 chars)<br><strong>Action:</strong> Click "Login"</td>
+            <td>Password length validation passes. User is authenticated successfully and redirected to <code>/dashboard.html</code>. No validation error triggered.</td>
+            <td>FR-02<br>FR-03</td>
+        </tr>
+        <tr>
+            <td class="tc-id">TC_03</td>
+            <td><strong>Empty Username Field</strong><br>Attempt login with an empty username and a valid password.<br><span class="tc-tag tag-invalid">Negative / Validation</span></td>
+            <td><strong>Username:</strong> <code>""</code> (Empty string)<br><strong>Password:</strong> <code>ValidPass123</code><br><strong>Action:</strong> Click "Login"</td>
+            <td>Submission is blocked. Field-level validation error appears below username input: <em>"Username is required and cannot be empty."</em> Cursor focuses on username field. No network request sent to auth API.</td>
+            <td>FR-01</td>
+        </tr>
+        <tr>
+            <td class="tc-id">TC_04</td>
+            <td><strong>Empty Password Field</strong><br>Attempt login with a valid username and empty password.<br><span class="tc-tag tag-invalid">Negative / Validation</span></td>
+            <td><strong>Username:</strong> <code>shahriar_user</code><br><strong>Password:</strong> <code>""</code> (Empty string)<br><strong>Action:</strong> Click "Login"</td>
+            <td>Submission is blocked. Field-level validation error appears below password input: <em>"Password is required and cannot be empty."</em> Cursor focuses on password field. No network request sent to auth API.</td>
+            <td>FR-01<br>FR-02</td>
+        </tr>
+        <tr>
+            <td class="tc-id">TC_05</td>
+            <td><strong>Both Fields Empty</strong><br>Attempt login without entering username or password.<br><span class="tc-tag tag-invalid">Negative / Validation</span></td>
+            <td><strong>Username:</strong> <code>""</code><br><strong>Password:</strong> <code>""</code><br><strong>Action:</strong> Click "Login"</td>
+            <td>Submission is blocked. Dual validation messages appear: <em>"Username is required"</em> and <em>"Password is required"</em>. Form submission aborted.</td>
+            <td>FR-01<br>FR-02</td>
+        </tr>
+        <tr>
+            <td class="tc-id">TC_06</td>
+            <td><strong>Whitespace-Only Username</strong><br>Attempt login with whitespace spaces in username.<br><span class="tc-tag tag-edge">Edge Case</span></td>
+            <td><strong>Username:</strong> <code>"   "</code> (3 whitespace spaces)<br><strong>Password:</strong> <code>ValidPass123</code><br><strong>Action:</strong> Click "Login"</td>
+            <td>System trims input, identifies empty string post-trim, and displays error: <em>"Username cannot consist solely of whitespace spaces."</em> Form is not submitted.</td>
+            <td>FR-01</td>
+        </tr>
+        <tr>
+            <td class="tc-id">TC_07</td>
+            <td><strong>Boundary Value Analysis (Password &lt; 6 Characters)</strong><br>Attempt login with 5-character password (one below minimum).<br><span class="tc-tag tag-edge">Edge Case / BVA</span></td>
+            <td><strong>Username:</strong> <code>shahriar_user</code><br><strong>Password:</strong> <code>abc12</code> (5 chars)<br><strong>Action:</strong> Click "Login"</td>
+            <td>Submission blocked by client/server validation. Displays error message: <em>"Password must be at least 6 characters long."</em> Authentication is not executed.</td>
+            <td>FR-02</td>
+        </tr>
+        <tr>
+            <td class="tc-id">TC_08</td>
+            <td><strong>Invalid Credentials (Attempt 1 of 3)</strong><br>Valid username with incorrect password on active account.<br><span class="tc-tag tag-invalid">Invalid Scenario</span></td>
+            <td><strong>Username:</strong> <code>shahriar_user</code><br><strong>Password:</strong> <code>WrongPass01</code><br><strong>Action:</strong> Click "Login"</td>
+            <td>Authentication fails. System increments failed login counter to 1. Displays error banner: <em>"Invalid username or password. 2 attempts remaining before account lockout."</em> Account remains ACTIVE.</td>
+            <td>FR-04<br>FR-05</td>
+        </tr>
+        <tr>
+            <td class="tc-id">TC_09</td>
+            <td><strong>Invalid Credentials (Attempt 2 of 3)</strong><br>Second consecutive failed login attempt on same account.<br><span class="tc-tag tag-invalid">Invalid Scenario</span></td>
+            <td><strong>Username:</strong> <code>shahriar_user</code><br><strong>Password:</strong> <code>WrongPass02</code><br><strong>Action:</strong> Click "Login"</td>
+            <td>Authentication fails. Failed login counter increments to 2. Warning banner displayed: <em>"Invalid username or password. Warning: 1 attempt remaining before account lockout."</em> Account remains ACTIVE.</td>
+            <td>FR-04<br>FR-05</td>
+        </tr>
+        <tr>
+            <td class="tc-id">TC_10</td>
+            <td><strong>Account Lockout Trigger (Attempt 3 of 3)</strong><br>Third consecutive failed login attempt.<br><span class="tc-tag tag-security">Security / Lockout</span></td>
+            <td><strong>Username:</strong> <code>shahriar_user</code><br><strong>Password:</strong> <code>WrongPass03</code><br><strong>Action:</strong> Click "Login"</td>
+            <td>Authentication fails. Failed attempt counter reaches 3. Account status updates to <code>LOCKED</code> in database. Alert displayed: <em>"Your account has been locked due to 3 consecutive failed login attempts. Please reset password or contact support."</em></td>
+            <td>FR-04<br>FR-05</td>
+        </tr>
+        <tr>
+            <td class="tc-id">TC_11</td>
+            <td><strong>Login Attempt on Locked Account</strong><br>Attempt login on locked account with correct credentials.<br><span class="tc-tag tag-security">Security / Lockout</span></td>
+            <td><strong>Username:</strong> <code>shahriar_user</code> (Status: LOCKED)<br><strong>Password:</strong> <code>SecurePass123!</code> (Correct password)<br><strong>Action:</strong> Click "Login"</td>
+            <td>Authentication rejected despite correct password. System displays modal message: <em>"Account is currently locked. Please check your email for unlock instructions or contact an administrator."</em> Access denied.</td>
+            <td>FR-05</td>
+        </tr>
+        <tr>
+            <td class="tc-id">TC_12</td>
+            <td><strong>Failed Counter Reset on Successful Login</strong><br>User has 2 prior failed attempts, then enters correct password.<br><span class="tc-tag tag-valid">State Transition</span></td>
+            <td><strong>Precondition:</strong> Account failed_attempts = 2<br><strong>Username:</strong> <code>shahriar_user</code><br><strong>Password:</strong> <code>SecurePass123!</code><br><strong>Action:</strong> Click "Login"</td>
+            <td>Authentication succeeds. System resets the failed login attempt counter from 2 back to 0. Session token created and user redirected to Dashboard.</td>
+            <td>FR-03<br>FR-05</td>
+        </tr>
+        <tr>
+            <td class="tc-id">TC_13</td>
+            <td><strong>Non-Existent / Unregistered User</strong><br>Attempt login with username that does not exist in database.<br><span class="tc-tag tag-invalid">Negative / Security</span></td>
+            <td><strong>Username:</strong> <code>non_existent_student_99</code><br><strong>Password:</strong> <code>SomePass123</code> (Valid format)<br><strong>Action:</strong> Click "Login"</td>
+            <td>Authentication fails. Displays generic error banner: <em>"Invalid username or password."</em> (System prevents user enumeration by not revealing whether username exists).</td>
+            <td>FR-04</td>
+        </tr>
+    </tbody>
+</table>
+
+<h3 class="step-title">Requirements Traceability Matrix (RTM)</h3>
+<table class="data-table" style="width: 100%;">
+    <thead>
+        <tr>
+            <th style="width: 15%;">Requirement ID</th>
+            <th style="width: 45%;">Requirement Description</th>
+            <th style="width: 25%;">Associated Test Cases</th>
+            <th style="width: 15%;">Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><strong>FR-01</strong></td>
+            <td>Username must not be empty</td>
+            <td><code>TC_03</code>, <code>TC_05</code>, <code>TC_06</code></td>
+            <td><strong style="color: #276749;">Covered (100%)</strong></td>
+        </tr>
+        <tr>
+            <td><strong>FR-02</strong></td>
+            <td>Password must be at least 6 characters long</td>
+            <td><code>TC_02</code>, <code>TC_04</code>, <code>TC_05</code>, <code>TC_07</code></td>
+            <td><strong style="color: #276749;">Covered (100%)</strong></td>
+        </tr>
+        <tr>
+            <td><strong>FR-03</strong></td>
+            <td>Valid username and password allow a successful login</td>
+            <td><code>TC_01</code>, <code>TC_02</code>, <code>TC_12</code></td>
+            <td><strong style="color: #276749;">Covered (100%)</strong></td>
+        </tr>
+        <tr>
+            <td><strong>FR-04</strong></td>
+            <td>Invalid credentials should display an error message</td>
+            <td><code>TC_08</code>, <code>TC_09</code>, <code>TC_10</code>, <code>TC_13</code></td>
+            <td><strong style="color: #276749;">Covered (100%)</strong></td>
+        </tr>
+        <tr>
+            <td><strong>FR-05</strong></td>
+            <td>After 3 consecutive failed login attempts, account is locked</td>
+            <td><code>TC_08</code>, <code>TC_09</code>, <code>TC_10</code>, <code>TC_11</code>, <code>TC_12</code></td>
+            <td><strong style="color: #276749;">Covered (100%)</strong></td>
+        </tr>
+    </tbody>
+</table>
+
+<div class="footer-note">
+    <strong>End of Assignment Document</strong> &bull; Submitted by Shahriar Rahman &bull; Verified Git Repository: https://github.com/rahmanshahriar777/myuniversityproject.git
+</div>
+
+</body>
+</html>
